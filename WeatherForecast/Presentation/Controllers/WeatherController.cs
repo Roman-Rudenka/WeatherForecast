@@ -3,39 +3,34 @@ using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Presentation.Controllers;
 
+
+
 [ApiController]
 [Route("api/weather")]
 public class WeatherController : ControllerBase
 {
-    private readonly IWeatherService _service;
-    private readonly ILocationResolver _locationResolver;
+    private readonly IWeatherService _weatherService;
 
-    public WeatherController(IWeatherService service, ILocationResolver locationResolver)
+    public WeatherController(IWeatherService weatherService)
     {
-        _service = service;
-        _locationResolver = locationResolver;
+        _weatherService = weatherService;
     }
 
     [HttpPost("today")]
-    public async Task<IActionResult> GetToday([FromBody] string? location) =>
-        Ok(await _service.GetTodayAsync(location, HttpContext));
+    public async Task<IActionResult> GetToday([FromBody] string address)
+    {
+        return Ok(await _weatherService.GetTodayAsync(address, CancellationToken.None));
+    }
 
-    [HttpPost("date")]
-    public async Task<IActionResult> GetByDate([FromBody] string location, DateTime date) =>
-        Ok(await _service.GetByDateAsync(location, HttpContext, date)); 
+    [HttpPost("day")]
+    public async Task<IActionResult> GetDay([FromBody] string address, DateOnly date)
+    {
+        return Ok(await _weatherService.GetByDateAsync(address, date,  CancellationToken.None));
+    }
 
     [HttpPost("week")]
-    public async Task<IActionResult> GetWeek([FromBody] string? location) =>
-        Ok(await _service.GetWeekAsync(location, HttpContext));
-
-    [HttpPost("month")]
-    public async Task<IActionResult> GetMonth([FromBody] string? location) =>
-        Ok(await _service.GetMonthAsync(location, HttpContext));
-
-    [HttpPost("location")]
-    public async Task<IActionResult> GetLocation([FromBody] string? location)
+    public async Task<IActionResult> GetWeek([FromBody] string address, DateOnly date)
     {
-        var resolved = await _locationResolver.ResolveLocationAsync(location, HttpContext);
-        return Ok(new { city = resolved });
+        return Ok(await _weatherService.GetWeekAsync(address, date,  CancellationToken.None));
     }
 }

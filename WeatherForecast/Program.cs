@@ -1,13 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Application.Services;
+using WeatherForecast.Infrastructure;
+using WeatherForecast.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHttpClient<ILocationResolver, LocationResolver>();
-builder.Services.AddHttpClient<IWeatherApiClient, WeatherApiClient>();
-builder.Services.AddScoped<IWeatherService, WeatherService>();
+Log.Logger = new LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Console().CreateLogger();
+
+
+
+builder.Services.AddControllers();
+builder.Services.AddHttpClient<IWeatherService, WeatherService>();
+builder.Services.AddScoped<IWeatherForecastRepository, ForecastRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
