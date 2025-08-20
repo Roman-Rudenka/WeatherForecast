@@ -1,7 +1,6 @@
 using System.Text.Json;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
-using WeatherForecast.Infrastructure.Repositories;
 
 namespace WeatherForecast.Application.Services;
 
@@ -9,35 +8,31 @@ public class WeatherService : IWeatherService
 {
     private readonly HttpClient _client;
     private readonly IWeatherForecastRepository _weatherForecastRepository;
-    private readonly ILogger<WeatherService> _logger;
-    public WeatherService(HttpClient client,  IWeatherForecastRepository weatherForecastRepository,  ILogger<WeatherService> logger)
+    private readonly IConfiguration _configuration;
+    public WeatherService(HttpClient client,  IWeatherForecastRepository weatherForecastRepository,  IConfiguration configuration)
     {
         _client = client;
         _weatherForecastRepository = weatherForecastRepository;
-        _logger = logger;
+        _configuration = configuration;
     }
 
     public async Task<Forecast> GetTodayAsync(string address, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(address))
         {
-            _logger.LogError("Address is null or empty");
             return null;
         }
         var date = DateOnly.FromDateTime(DateTime.Now);
         var existingForecast = await _weatherForecastRepository.GetForecastByDateAndAddress(address, date, CancellationToken.None);
         if (existingForecast != null)
         {
-            _logger.LogInformation($"Forecast for date {date} and address {address} is found in database");
             return existingForecast;
         }
 
         var formatedDateStart = date.ToString("yyyy-MM-dd");
         var formatedDateEnd = formatedDateStart;
         var newForecast = await GetWeatherAsync(address, date);
-        _logger.LogInformation($"Forecast for date {date} and address {address} is fetching from API");
         await _weatherForecastRepository.AddForecast(newForecast, CancellationToken.None);
-        _logger.LogInformation($"Forecast for date {date} and address {address} is added to Database");
         return newForecast;   
     }
 
@@ -45,22 +40,18 @@ public class WeatherService : IWeatherService
     {
          if (string.IsNullOrEmpty(address))
          {
-             _logger.LogInformation($"Forecast for date {date} and address {address} is found in database");
              return null;
          }
          var existingForecast = await _weatherForecastRepository.GetForecastByDateAndAddress(address, date, CancellationToken.None);
          if (existingForecast != null)
          {
-             _logger.LogInformation($"Forecast for date {date} and address {address} is found in database");
              return existingForecast;
          }
         
         var formatedDateStart = date.ToString("yyyy-MM-dd");
          var formatedDateEnd = formatedDateStart;
          var newForecast = await GetWeatherAsync(address, date);
-         _logger.LogInformation($"Forecast for date {date} and address {address} is fetching from API");
          await _weatherForecastRepository.AddForecast(newForecast,  CancellationToken.None);
-         _logger.LogInformation($"Forecast for date {date} and address {address} is added to Database");
          return newForecast;
     }
     
@@ -70,27 +61,26 @@ public class WeatherService : IWeatherService
         var formatedDateEnd = date.AddDays(7).ToString("yyyy-MM-dd");
         if (string.IsNullOrEmpty(address))
         {
-            _logger.LogInformation($"Forecast for date {date} and address {address} is found in database");
             return null;
         }
         var existingWeekForecast = await _weatherForecastRepository.GetWeekForecasts(address, date, date.AddDays(7), CancellationToken.None);
         if (existingWeekForecast != null && existingWeekForecast.Any() && existingWeekForecast.Count() == 7)
         {
-            _logger.LogInformation($"Forecast for week is found in database");
             return existingWeekForecast;
         }
         
         var newWeekForecast = await GetWeekWeatherAsync(address, date);
-        _logger.LogInformation($"Forecast for date {date} and address {address} is fetching from API");
         await _weatherForecastRepository.AddForecasts(newWeekForecast, CancellationToken.None);
-        _logger.LogInformation($"Forecast for date {date} and address {address} is added to Database");
         return  newWeekForecast;
     }
 
     public async Task<Forecast> GetWeatherAsync(string address, DateOnly date)
     {
         var formatedDate = date.ToString("yyyy-MM-dd");
-        var url = $"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{address}/{formatedDate}/{formatedDate}?key=GXQM88PXBA5QSTGLN78FLKMXG";
+        var baseUrl = _configuration["WeatherApi:BaseUrl"];
+        var apiKey = _configuration["WeatherApi:apiKey"];
+        var url = $"{baseUrl}/{address}/{formatedDate}/{formatedDate}?key={apiKey}";
+        Console.WriteLine(url);
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
@@ -131,7 +121,9 @@ public class WeatherService : IWeatherService
     {
         var dateStart = date.ToString("yyyy-MM-dd");
         var dateEnd = date.AddDays(7).ToString("yyyy-MM-dd");
-        var url = $"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{address}/{dateStart}/{dateEnd}?key=GXQM88PXBA5QSTGLN78FLKMXG"; 
+        var baseUrl = _configuration["WeatherApi:BaseUrl"];
+        var apiKey = _configuration["WeatherApi:apiKey"];
+        var url = $"{baseUrl}/{address}/{dateStart}/{dateEnd}?key={apiKey}"; 
         var response = await _client.GetAsync(url); 
         response.EnsureSuccessStatusCode();
         

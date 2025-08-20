@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  weatherforecast:
+    build:
+      context: "C:\\Users\\romar\\RiderProjects\\WeatherForecast\\WeatherForecast\\\
+        WeatherForecast"
+      dockerfile: "Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/WeatherForecast.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "weatherforecast:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\romar\\RiderProjects\\WeatherForecast\\WeatherForecast\\WeatherForecast:/app:rw"
+    - "C:\\Users\\romar\\RiderProjects\\WeatherForecast\\WeatherForecast\\WeatherForecast:/src:rw"
+    - "C:\\Users\\romar\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"
