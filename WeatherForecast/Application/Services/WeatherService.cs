@@ -21,8 +21,10 @@ public class WeatherService(
         {
             throw new ArgumentException("address can not be empty", nameof(address));
         }
+        
         var date = DateOnly.FromDateTime(DateTime.Now);
         var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
+        
         if (existingForecast != null)
         {
             return existingForecast;

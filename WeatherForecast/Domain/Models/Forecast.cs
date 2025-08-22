@@ -2,12 +2,12 @@ namespace WeatherForecast.Domain.Models;
 
 public class Forecast
 {
-    public string Id { get; set; } = Guid.CreateVersion7().ToString();
-    public required string Address { get; set; }
-    public float Lon { get; set; }
-    public float Lat { get; set; }
-    public DateOnly Date { get; set; }
-    public double TemperatureC { get; set; }
-    public string? Description { get; set; }
+    public Guid Id { get; init; } = Guid.CreateVersion7();
+    public required string Address { get; init; }
+    public float Lon { get; init; }
+    public float Lat { get; init; }
+    public DateOnly Date { get; init; }
+    public double TemperatureC { get; init; }
+    public string? Description { get; init; }
 }
 

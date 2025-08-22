@@ -2,7 +2,6 @@ namespace WeatherForecast.Application.Middleware;
 
 public class RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
 {
-    
     public async Task InvokeAsync(HttpContext context)
     {
         var request = context.Request;

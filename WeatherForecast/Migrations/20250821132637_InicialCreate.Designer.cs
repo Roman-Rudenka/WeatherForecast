@@ -12,8 +12,8 @@ using WeatherForecast.Infrastructure;
 namespace WeatherForecast.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250819084542_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250821132637_InicialCreate")]
+    partial class InicialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,9 @@ namespace WeatherForecast.Migrations
 
             modelBuilder.Entity("WeatherForecast.Domain.Models.Forecast", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()

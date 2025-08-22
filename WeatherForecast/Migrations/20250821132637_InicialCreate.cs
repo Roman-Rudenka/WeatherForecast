@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WeatherForecast.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InicialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace WeatherForecast.Migrations
                 name: "Forecasts",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Address = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Lon = table.Column<float>(type: "real", nullable: false),
                     Lat = table.Column<float>(type: "real", nullable: false),
