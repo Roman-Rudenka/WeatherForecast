@@ -16,6 +16,5 @@ public class ForecastConfiguration : IEntityTypeConfiguration<Forecast>
         builder.Property(f => f.TemperatureC).IsRequired();
         builder.Property(f => f.Description).IsRequired().HasMaxLength(500);
         builder.ToTable("Forecasts");
-
     }
 }

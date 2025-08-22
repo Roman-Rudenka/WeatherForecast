@@ -4,35 +4,31 @@ using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Infrastructure.Repositories;
 
-public class ForecastRepository : IWeatherForecastRepository
-{
-    private readonly AppDbContext _context;
-
-    public ForecastRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-    
+public class ForecastRepository(AppDbContext context) : IWeatherForecastRepository
+{ 
     public async Task AddForecast(Forecast forecast,  CancellationToken cancellationToken)
     {
-        await _context.Forecasts.AddAsync(forecast);
-        await _context.SaveChangesAsync();
+        await context.Set<Forecast>().AddAsync(forecast, cancellationToken);
     }
 
-    public async Task<Forecast> GetForecastByDateAndAddress(string address, DateOnly date,  CancellationToken cancellationToken)
+    public Task<Forecast?> GetForecastByDateAndAddress(string address, DateOnly date,  CancellationToken cancellationToken)
     {
-        return await _context.Forecasts.FirstOrDefaultAsync(f => f.Date == date && f.Address == address);
-    }
-
-    public async Task<IEnumerable<Forecast>> GetWeekForecasts(string address, DateOnly firstDay, DateOnly lastDay, CancellationToken cancellationToken)
-    {
-        return await _context.Forecasts.Where(f => f.Date >= firstDay && f.Date <= lastDay && f.Address == address).ToListAsync();
+        return context.Forecasts.FirstOrDefaultAsync(f => f.Date == date && f.Address == address, cancellationToken: cancellationToken);
     }
     
-    public async Task AddForecasts(IEnumerable<Forecast> forecasts,  CancellationToken cancellationToken)
+    public async Task<ICollection<Forecast>> GetWeekForecasts(string address, DateOnly firstDay, DateOnly lastDay, CancellationToken cancellationToken)
     {
-        await _context.Forecasts.AddRangeAsync(forecasts);
-        await _context.SaveChangesAsync();
+         return await context.Forecasts.Where(f => f.Date >= firstDay && f.Date <= lastDay && f.Address == address).ToListAsync(cancellationToken);
     }
 
+    
+    public async Task AddForecasts(ICollection<Forecast> forecasts,  CancellationToken cancellationToken)
+    {
+        await context.Forecasts.AddRangeAsync(forecasts, cancellationToken);
+    }
+
+    public async Task SaveChanges(CancellationToken cancellationToken)
+    {
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

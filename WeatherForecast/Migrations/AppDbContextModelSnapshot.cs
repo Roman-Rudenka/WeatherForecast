@@ -24,8 +24,9 @@ namespace WeatherForecast.Migrations
 
             modelBuilder.Entity("WeatherForecast.Domain.Models.Forecast", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()

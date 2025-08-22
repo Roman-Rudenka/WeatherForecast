@@ -4,17 +4,19 @@ namespace WeatherForecast.Domain.Models;
 
 public class ForecastRoot
 {
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    public List<DayForecast> Days { get; set; }
+    public double Latitude { get; init; }
+    public double Longitude { get; init; }
+    public required List<DayForecast> Days { get; init; }
 
 }
 
-public class DayForecast
+public class DayForecast(string date, double temperature, string? description)
 {
     [JsonPropertyName("datetime")]
-    public string Date { get; set; }
+    public string Date { get; } = date;
+
     [JsonPropertyName("temp")]
-    public double Temperature { get; set; }
-    public string Description { get; set; } 
+    public double Temperature { get; } = temperature;
+
+    public string? Description { get; } = description;
 }
