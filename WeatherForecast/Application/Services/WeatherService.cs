@@ -19,7 +19,7 @@ public class WeatherService(
     {
         if (string.IsNullOrEmpty(address))
         {
-            throw new ArgumentException("address can not be empty", nameof(address));
+            throw new ArgumentException("Address cannot be null or empty");
         }
         
         var date = DateOnly.FromDateTime(DateTime.Now);
@@ -41,9 +41,11 @@ public class WeatherService(
     {
          if (string.IsNullOrEmpty(address))
          {
-             throw new ArgumentException("address can not be empty", nameof(address));
+             throw new ArgumentException("address can not be empty");
          }
+         
          var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
+         
          if (existingForecast != null)
          {
              return existingForecast;
@@ -87,7 +89,6 @@ public class WeatherService(
         var baseUrl = GetBaseUrl();
         var apiKey = GetApiKey();
         var url = $"{baseUrl}/{address}/{formatedDate}/{formatedDate}?key={apiKey}";
-        Console.WriteLine(url);
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 

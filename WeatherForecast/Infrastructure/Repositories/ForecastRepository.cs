@@ -22,13 +22,13 @@ public class ForecastRepository(AppDbContext context) : IWeatherForecastReposito
     }
 
     
-    public async Task AddForecasts(ICollection<Forecast> forecasts,  CancellationToken cancellationToken)
+    public Task AddForecasts(ICollection<Forecast> forecasts,  CancellationToken cancellationToken)
     {
-        await context.Forecasts.AddRangeAsync(forecasts, cancellationToken);
+        return context.Forecasts.AddRangeAsync(forecasts, cancellationToken);
     }
 
-    public async Task SaveChanges(CancellationToken cancellationToken)
+    public Task SaveChanges(CancellationToken cancellationToken)
     {
-        await context.SaveChangesAsync(cancellationToken);
+        return context.SaveChangesAsync(cancellationToken);
     }
 }
