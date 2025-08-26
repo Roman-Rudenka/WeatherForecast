@@ -1,8 +1,9 @@
 using System.Text.Json;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
-using WeatherForecast.Domain.Options;
+using WeatherForecast.Application.Options;
 using Microsoft.Extensions.Options;
+using WeatherForecast.Presentation.Exceptions;
 
 namespace WeatherForecast.Application.Services;
 
@@ -17,11 +18,6 @@ public class WeatherService(
 
     public async Task<Forecast> GetTodayAsync(string address, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(address))
-        {
-            throw new ArgumentException("Address cannot be null or empty");
-        }
-        
         var date = DateOnly.FromDateTime(DateTime.Now);
         var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
         
@@ -39,11 +35,6 @@ public class WeatherService(
 
     public async Task<Forecast> GetByDateAsync(string address, DateOnly date, CancellationToken cancellationToken)
     {
-         if (string.IsNullOrEmpty(address))
-         {
-             throw new ArgumentException("address can not be empty");
-         }
-         
          var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
          
          if (existingForecast != null)
@@ -60,11 +51,6 @@ public class WeatherService(
     
     public async Task<ICollection<Forecast>> GetWeekAsync(string address, DateOnly date, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(address))
-        {
-            throw new ArgumentException("address can not be empty", nameof(address));
-        }
-
         var existingWeekForecast =
             await weatherForecastRepository.GetWeekForecasts(address, date, date.AddDays(7), cancellationToken);
         if (existingWeekForecast.Count() == 7)
@@ -75,7 +61,7 @@ public class WeatherService(
         var newWeekForecast  = await GetWeekWeatherAsync(address, date) as ICollection<Forecast>;
         if (newWeekForecast == null)
         {
-            throw new ArgumentException("Something goes wrong with Api. Try again later");
+            throw new NotFoundException("Cannot get week forecasts");
         }
         await weatherForecastRepository.AddForecasts(newWeekForecast, cancellationToken);
         await weatherForecastRepository.SaveChanges(cancellationToken);

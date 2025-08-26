@@ -1,4 +1,4 @@
-namespace WeatherForecast.Application.Middleware;
+namespace WeatherForecast.Presentation.Middleware;
 
 public class RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
 {

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Application.Interfaces;
-using WeatherForecast.Application.Middleware;
+using WeatherForecast.Presentation.Middleware;
 using WeatherForecast.Application.Services;
-using WeatherForecast.Domain.Options;
+using WeatherForecast.Application.Options;
 using WeatherForecast.Infrastructure;
 using WeatherForecast.Infrastructure.Repositories;
 using Microsoft.Extensions.Options;

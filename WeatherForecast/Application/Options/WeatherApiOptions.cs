@@ -1,4 +1,4 @@
-namespace WeatherForecast.Domain.Options;
+namespace WeatherForecast.Application.Options;
 
 public class WeatherApiOptions
 {
