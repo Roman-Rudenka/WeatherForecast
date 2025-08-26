@@ -18,6 +18,10 @@ public class WeatherService(
 
     public async Task<Forecast> GetTodayAsync(string address, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(address))
+        {
+            throw new ApiValidationException("Address is empty");
+        }
         var date = DateOnly.FromDateTime(DateTime.Now);
         var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
         
@@ -35,6 +39,10 @@ public class WeatherService(
 
     public async Task<Forecast> GetByDateAsync(string address, DateOnly date, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(address))
+        {
+            throw new ApiValidationException("Address is empty");
+        }
          var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
          
          if (existingForecast != null)
@@ -51,6 +59,10 @@ public class WeatherService(
     
     public async Task<ICollection<Forecast>> GetWeekAsync(string address, DateOnly date, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(address))
+        {
+            throw new ApiValidationException("Address is empty");
+        }
         var existingWeekForecast =
             await weatherForecastRepository.GetWeekForecasts(address, date, date.AddDays(7), cancellationToken);
         if (existingWeekForecast.Count() == 7)
