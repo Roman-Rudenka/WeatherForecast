@@ -6,6 +6,7 @@ using WeatherForecast.Application.Options;
 using WeatherForecast.Infrastructure;
 using WeatherForecast.Infrastructure.Repositories;
 using Microsoft.Extensions.Options;
+using WeatherForecast.Infrastructure.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 

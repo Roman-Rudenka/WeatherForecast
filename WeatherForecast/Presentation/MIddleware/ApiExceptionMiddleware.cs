@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using WeatherForecast.Presentation.Common;
+using WeatherForecast.Application.Common;
 
 namespace WeatherForecast.Presentation.Middleware;
 

@@ -1,4 +1,4 @@
-namespace WeatherForecast.Presentation.Common;
+namespace WeatherForecast.Application.Common;
 
 public class ApiBaseException : Exception
 {

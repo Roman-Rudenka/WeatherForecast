@@ -3,7 +3,7 @@ using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Application.Options;
 using Microsoft.Extensions.Options;
-using WeatherForecast.Presentation.Exceptions;
+using WeatherForecast.Application.Exceptions;
 
 namespace WeatherForecast.Application.Services;
 
@@ -43,18 +43,19 @@ public class WeatherService(
         {
             throw new ApiValidationException("Address is empty");
         }
-         var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
+        
+        var existingForecast = await weatherForecastRepository.GetForecastByDateAndAddress(address, date, cancellationToken);
          
-         if (existingForecast != null)
-         {
-             return existingForecast;
-         }
+        if (existingForecast != null)
+        {
+            return existingForecast;
+        }
          
-         var newForecast = await GetWeatherAsync(address, date);
-         await weatherForecastRepository.AddForecast(newForecast,  cancellationToken);
-         await weatherForecastRepository.SaveChanges(cancellationToken);
+        var newForecast = await GetWeatherAsync(address, date);
+        await weatherForecastRepository.AddForecast(newForecast,  cancellationToken);
+        await weatherForecastRepository.SaveChanges(cancellationToken);
          
-         return newForecast;
+        return newForecast;
     }
     
     public async Task<ICollection<Forecast>> GetWeekAsync(string address, DateOnly date, CancellationToken cancellationToken)

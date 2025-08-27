@@ -1,4 +1,4 @@
-namespace WeatherForecast.Application.Options;
+namespace WeatherForecast.Infrastructure.Options;
 
 public class DbOptions
 {

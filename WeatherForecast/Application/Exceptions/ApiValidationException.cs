@@ -1,5 +1,5 @@
-using WeatherForecast.Presentation.Common;
+using WeatherForecast.Application.Common;
 
-namespace WeatherForecast.Presentation.Exceptions;
+namespace WeatherForecast.Application.Exceptions;
 
 public class ApiValidationException(string message) : ApiBaseException("Validation Error", 400, message);
